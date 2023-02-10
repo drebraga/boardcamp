@@ -32,15 +32,43 @@ export const getCustomersById = async (req, res) => {
 
 export const postCustomers = async (req, res) => {
 
-    const game = req.body;
+    const customer = req.body;
 
     try {
 
-        db.query(`
+        await db.query(`
             INSERT INTO 
                 customers (name, phone, cpf, birthday)
             VALUES ($1, $2, $3, $4)
-        `, [game.name, game.phone, game.cpf, game.birthday]);
+        `, [customer.name, customer.phone, customer.cpf, customer.birthday]);
+
+        return res.sendStatus(201);
+
+    } catch (err) {
+
+        return res.status(500).send(err.response.message);
+
+    }
+};
+
+export const putCustomers = async (req, res) => {
+
+    const { id } = req.params;
+    const customer = req.body;
+
+    try {
+
+        await db.query(`
+            UPDATE
+                customers
+            SET 
+                name = $1,
+                phone = $2,
+                cpf = $3,
+                birthday = $4
+            WHERE 
+                id = $5
+        `, [customer.name, customer.phone, customer.cpf, customer.birthday, id]);
 
         return res.sendStatus(201);
 
