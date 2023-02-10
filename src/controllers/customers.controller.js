@@ -65,7 +65,7 @@ export const putCustomers = async (req, res) => {
 
     try {
 
-        const customerExists = await db.query(`SELECT * FROM customers WHERE cpf = $1 AND id = $2`, [customer.cpf, id]);
+        const customerExists = await db.query(`SELECT * FROM customers WHERE cpf = $1 AND id <> $2`, [customer.cpf, id]);
 
         if (customerExists.rows[0]) return res.sendStatus(409);
 
@@ -81,7 +81,7 @@ export const putCustomers = async (req, res) => {
                 id = $5
         `, [customer.name, customer.phone, customer.cpf, customer.birthday, id]);
 
-        return res.sendStatus(201);
+        return res.sendStatus(200);
 
     } catch (err) {
 
