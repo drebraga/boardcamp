@@ -50,7 +50,7 @@ export const postCustomers = async (req, res) => {
                 cpf = $1
         `, [cpf]);
 
-        if (customerExists.length === 0) return res.sendStatus(409);
+        if (customerExists.length !== 0) return res.sendStatus(409);
 
         await db.query(`
             INSERT INTO
@@ -81,7 +81,7 @@ export const putCustomers = async (req, res) => {
         WHERE 
             cpf = $1 AND id <> $2`, [cpf, id]);
 
-        if (customerExists.length === 0) return res.sendStatus(409);
+        if (customerExists.length !== 0) return res.sendStatus(409);
 
         await db.query(`
             UPDATE

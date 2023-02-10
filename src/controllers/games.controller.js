@@ -22,7 +22,7 @@ export const postGames = async (req, res) => {
 
         const { rows: gameExists } = await db.query(`SELECT * FROM games WHERE name = $1`, [name]);
 
-        if (gameExists.length === 0) return res.sendStatus(409);
+        if (gameExists.length !== 0) return res.sendStatus(409);
 
         await db.query(`
             INSERT INTO 
