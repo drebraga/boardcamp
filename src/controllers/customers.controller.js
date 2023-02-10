@@ -1,11 +1,10 @@
 import db from "../database/database.connection.js";
 
 export const getCustomers = async (req, res) => {
-
     try {
 
-        const customers = await db.query("SELECT * FROM customers");
-        return res.status(200).send(customers.rows);
+        const { rows: customers } = await db.query("SELECT * FROM customers");
+        return res.status(200).send(customers);
 
     } catch (err) {
 
@@ -20,11 +19,16 @@ export const getCustomersById = async (req, res) => {
 
     try {
 
-        const customer = await db.query(`SELECT * FROM customers WHERE id = $1`, [id]);
+        const { rows: customer } = await db.query(`
+            SELECT * FROM
+                customers
+            WHERE
+                id = $1
+            `, [id]);
 
-        if (!customer.rows[0]) return res.sendStatus(404);
+        if (!customer[0]) return res.sendStatus(404);
 
-        return res.status(200).send(customer.rows[0]);
+        return res.status(200).send(customer[0]);
 
     } catch (err) {
 
@@ -35,19 +39,25 @@ export const getCustomersById = async (req, res) => {
 
 export const postCustomers = async (req, res) => {
 
-    const customer = req.body;
+    const { name, phone, cpf, birthday } = req.body;
 
     try {
 
-        const customerExists = await db.query(`SELECT * FROM customers WHERE cpf = $1`, [customer.cpf]);
+        const { rows: customerExists } = await db.query(`
+            SELECT * FROM
+                customers
+            WHERE
+                cpf = $1
+        `, [cpf]);
 
-        if (customerExists.rows[0]) return res.sendStatus(409);
+        if (customerExists.length === 0) return res.sendStatus(409);
 
         await db.query(`
-            INSERT INTO 
+            INSERT INTO
                 customers (name, phone, cpf, birthday)
-            VALUES ($1, $2, $3, $4)
-        `, [customer.name, customer.phone, customer.cpf, customer.birthday]);
+            VALUES
+                ($1, $2, $3, $4)
+        `, [name, phone, cpf, birthday]);
 
         return res.sendStatus(201);
 
@@ -61,13 +71,17 @@ export const postCustomers = async (req, res) => {
 export const putCustomers = async (req, res) => {
 
     const { id } = req.params;
-    const customer = req.body;
+    const { name, phone, cpf, birthday } = req.body;
 
     try {
 
-        const customerExists = await db.query(`SELECT * FROM customers WHERE cpf = $1 AND id <> $2`, [customer.cpf, id]);
+        const { rows: customerExists } = await db.query(`
+        SELECT * FROM 
+            customers 
+        WHERE 
+            cpf = $1 AND id <> $2`, [cpf, id]);
 
-        if (customerExists.rows[0]) return res.sendStatus(409);
+        if (customerExists.length === 0) return res.sendStatus(409);
 
         await db.query(`
             UPDATE
@@ -79,7 +93,7 @@ export const putCustomers = async (req, res) => {
                 birthday = $4
             WHERE 
                 id = $5
-        `, [customer.name, customer.phone, customer.cpf, customer.birthday, id]);
+        `, [name, phone, cpf, birthday, id]);
 
         return res.sendStatus(200);
 
