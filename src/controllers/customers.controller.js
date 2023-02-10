@@ -9,23 +9,26 @@ export const getCustomers = async (req, res) => {
 
     } catch (err) {
 
-        return res.status(500).send(err.response.message);
+        return res.status(500).send(err.message);
 
     }
 };
 
 export const getCustomersById = async (req, res) => {
 
-    const { id } = req.params
+    const { id } = req.params;
 
     try {
 
-        const customers = await db.query(`SELECT * FROM customers WHERE id = $1`, [id]);
-        return res.status(200).send(customers.rows[0]);
+        const customer = await db.query(`SELECT * FROM customers WHERE id = $1`, [id]);
+
+        if (!customer.rows[0]) return res.sendStatus(404);
+
+        return res.status(200).send(customer.rows[0]);
 
     } catch (err) {
 
-        return res.status(500).send(err.response.message);
+        return res.status(500).send(err.message);
 
     }
 };
@@ -35,6 +38,10 @@ export const postCustomers = async (req, res) => {
     const customer = req.body;
 
     try {
+
+        const customerExists = await db.query(`SELECT * FROM customers WHERE cpf = $1`, [customer.cpf]);
+
+        if (customerExists.rows[0]) return res.sendStatus(409);
 
         await db.query(`
             INSERT INTO 
@@ -46,7 +53,7 @@ export const postCustomers = async (req, res) => {
 
     } catch (err) {
 
-        return res.status(500).send(err.response.message);
+        return res.status(500).send(err.message);
 
     }
 };
@@ -57,6 +64,10 @@ export const putCustomers = async (req, res) => {
     const customer = req.body;
 
     try {
+
+        const customerExists = await db.query(`SELECT * FROM customers WHERE cpf = $1 AND id = $2`, [customer.cpf, id]);
+
+        if (customerExists.rows[0]) return res.sendStatus(409);
 
         await db.query(`
             UPDATE
@@ -74,7 +85,7 @@ export const putCustomers = async (req, res) => {
 
     } catch (err) {
 
-        return res.status(500).send(err.response.message);
+        return res.status(500).send(err.message);
 
     }
 };

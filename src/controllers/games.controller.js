@@ -9,7 +9,7 @@ export const getGames = async (req, res) => {
 
     } catch (err) {
 
-        return res.status(500).send(err.response.message);
+        return res.status(500).send(err.message);
 
     }
 };
@@ -19,6 +19,10 @@ export const postGames = async (req, res) => {
     const game = req.body;
 
     try {
+
+        const gameExists = await db.query(`SELECT * FROM games WHERE name = $1`, [game.name]);
+
+        if (gameExists.rows[0]) return res.sendStatus(409);
 
         await db.query(`
             INSERT INTO 
@@ -30,7 +34,7 @@ export const postGames = async (req, res) => {
 
     } catch (err) {
 
-        return res.status(500).send(err.response.message);
+        return res.status(500).send(err.message);
 
     }
 };
