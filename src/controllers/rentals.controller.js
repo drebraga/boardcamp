@@ -113,9 +113,10 @@ export const deleteRentals = async (req, res) => {
     try {
 
         await db.query(`
-            DELETE
+            DELETE FROM
                 rentals
-            WHERE id = $1;
+            WHERE 
+                id = $1;
         `, [id]);
 
         return res.sendStatus(200);
