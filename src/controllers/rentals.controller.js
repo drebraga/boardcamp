@@ -102,7 +102,7 @@ export const returnRental = async (req, res) => {
             WHERE id = $3;
         `, [returnDate, delayFee, id]);
 
-        return res.sendStatus(201);
+        return res.sendStatus(200);
 
     } catch (err) {
 

@@ -5,6 +5,7 @@ import checkCustomer from "../middleware/checkCustomer.middleware.js";
 import checkGame from "../middleware/checkGame.middleware.js";
 import schemaValidate from "../middleware/schema.validation.js";
 import checkStock from "../middleware/checkStock.middleware.js";
+import checkRentId from "../middleware/checkRentId.middleware.js";
 
 const rentRouter = Router();
 
@@ -15,7 +16,7 @@ rentRouter.post("/rentals",
     checkGame(),
     checkStock(),
     postRentals);
-rentRouter.post("/rentals/:id/return", returnRental);
+rentRouter.post("/rentals/:id/return", checkRentId(), returnRental);
 rentRouter.delete("/rentals/:id", deleteRentals);
 
 export default rentRouter;
