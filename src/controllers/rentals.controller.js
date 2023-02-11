@@ -20,7 +20,14 @@ export const getRentals = async (req, res) => {
 
         const response = rentals.map((item, i) => {
             return ({
-                item,
+                id: item.id,
+                customerId: item.customerId,
+                gameId: item.gameId,
+                rentDate: item.rentDate,
+                daysRented: item.daysRented,
+                returnDate: item.returnDate,
+                originalPrice: item.originalPrice,
+                delayFee: item.delayFee,
                 customer: {
                     id: rentals[i].customerId,
                     name: customers.find((e) => e.id === rentals[i].customerId).name
