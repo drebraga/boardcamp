@@ -93,7 +93,7 @@ export const returnRental = async (req, res) => {
         const diff = dayjs(returnDate).diff(rentDate, "days");
         const pricePerDay = originalPrice / daysRented;
 
-        const delayFee = (diff <= daysRented) ? 0 : pricePerDay * diff;
+        const delayFee = (diff <= daysRented) ? 0 : pricePerDay * (daysRented - diff);
 
         await db.query(`
             UPDATE
