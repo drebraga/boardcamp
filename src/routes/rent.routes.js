@@ -16,7 +16,7 @@ rentRouter.post("/rentals",
     checkGame(),
     checkStock(),
     postRentals);
-rentRouter.post("/rentals/:id/return", checkRentId(), returnRental);
-rentRouter.delete("/rentals/:id", deleteRentals);
+rentRouter.post("/rentals/:id/return", checkRentId("close"), returnRental);
+rentRouter.delete("/rentals/:id", checkRentId("delete"), deleteRentals);
 
 export default rentRouter;

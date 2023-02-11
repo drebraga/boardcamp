@@ -1,6 +1,6 @@
 import db from "../database/database.connection.js";
 
-const checkRentId = () => {
+const checkRentId = (type) => {
     return async (req, res, next) => {
 
         const { id } = req.params;
@@ -13,7 +13,9 @@ const checkRentId = () => {
 
             if (rent.length === 0) return res.sendStatus(404);
 
-            if (rent[0].returnDate !== null) return res.sendStatus(400);
+            if (rent[0].returnDate !== null && type === "close") return res.sendStatus(400);
+
+            if (rent[0].returnDate === null && type === "delete") return res.sendStatus(400);
 
             next();
 

@@ -106,4 +106,21 @@ export const returnRental = async (req, res) => {
     }
 };
 
-export const deleteRentals = (req, res) => { };
+export const deleteRentals = async (req, res) => {
+
+    const { id } = req.params;
+
+    try {
+
+        await db.query(`
+            DELETE
+                rentals
+            WHERE id = $1;
+        `, [id]);
+
+        return res.sendStatus(200);
+
+    } catch (err) {
+        return res.status(500).send(err.message);
+    }
+};
