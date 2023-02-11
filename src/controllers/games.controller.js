@@ -4,13 +4,11 @@ export const getGames = async (req, res) => {
 
     try {
 
-        const { rows: games } = await db.query("SELECT * FROM games");
+        const { rows: games } = await db.query("SELECT * FROM games;");
         return res.status(200).send(games);
 
     } catch (err) {
-
         return res.status(500).send(err.message);
-
     }
 };
 
@@ -33,8 +31,6 @@ export const postGames = async (req, res) => {
         return res.sendStatus(201);
 
     } catch (err) {
-
         return res.status(500).send(err.message);
-
     }
 };

@@ -7,9 +7,7 @@ export const getCustomers = async (req, res) => {
         return res.status(200).send(customers);
 
     } catch (err) {
-
         return res.status(500).send(err.message);
-
     }
 };
 
@@ -31,9 +29,7 @@ export const getCustomersById = async (req, res) => {
         return res.status(200).send(customer[0]);
 
     } catch (err) {
-
         return res.status(500).send(err.message);
-
     }
 };
 
@@ -62,9 +58,7 @@ export const postCustomers = async (req, res) => {
         return res.sendStatus(201);
 
     } catch (err) {
-
         return res.status(500).send(err.message);
-
     }
 };
 
@@ -98,8 +92,6 @@ export const putCustomers = async (req, res) => {
         return res.sendStatus(200);
 
     } catch (err) {
-
         return res.status(500).send(err.message);
-
     }
 };

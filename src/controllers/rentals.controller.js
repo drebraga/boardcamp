@@ -36,14 +36,14 @@ export const getRentals = async (req, res) => {
                     id: rentals[i].gameId,
                     name: games.find((e) => e.id === rentals[i].gameId).name
                 }
-            })
+            });
         });
 
         return res.send(response);
     } catch (err) {
         return res.status(500).send(err.message);
     }
-}
+};
 
 export const postRentals = async (req, res) => {
 
@@ -52,7 +52,7 @@ export const postRentals = async (req, res) => {
     try {
 
         const { rows: pricePerDay } = await db.query(`
-            SELECT "pricePerDay" FROM games WHERE id = $1
+            SELECT "pricePerDay" FROM games WHERE id = $1;
         `, [gameId]);
 
         const originalPrice = pricePerDay[0].pricePerDay * daysRented;
@@ -61,18 +61,15 @@ export const postRentals = async (req, res) => {
         await db.query(`
             INSERT INTO 
                 rentals ("customerId", "gameId", "rentDate", "daysRented", "originalPrice")
-            VALUES ($1, $2, $3, $4, $5)
+            VALUES ($1, $2, $3, $4, $5);
         `, [customerId, gameId, rentDate, daysRented, originalPrice]);
 
         return res.sendStatus(201);
 
     } catch (err) {
-
         return res.status(500).send(err.message);
-
     }
-
-}
+};
 
 export const returnRental = async (req, res) => {
 
@@ -83,7 +80,7 @@ export const returnRental = async (req, res) => {
         const returnDate = dayjs().format("YYYY-MM-DD");
 
         const { rows: rentals } = await db.query(`
-            SELECT "rentDate", "daysRented", "originalPrice" FROM rentals WHERE id = $1
+            SELECT "rentDate", "daysRented", "originalPrice" FROM rentals WHERE id = $1;
         `, [id]);
 
         if (rentals.length === 0) return res.sendStatus(404);
@@ -93,7 +90,7 @@ export const returnRental = async (req, res) => {
         const diff = dayjs(returnDate).diff(rentDate, "days");
         const pricePerDay = originalPrice / daysRented;
 
-        const delayFee = (diff <= daysRented) ? 0 : pricePerDay * (daysRented - diff);
+        const delayFee = (diff <= daysRented) ? 0 : (diff - daysRented) * pricePerDay;
 
         await db.query(`
             UPDATE
@@ -105,13 +102,8 @@ export const returnRental = async (req, res) => {
         return res.sendStatus(200);
 
     } catch (err) {
-
         return res.status(500).send(err.message);
-
     }
+};
 
-}
-
-export const deleteRentals = (req, res) => {
-
-}
+export const deleteRentals = (req, res) => { };

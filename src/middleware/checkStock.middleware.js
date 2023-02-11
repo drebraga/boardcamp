@@ -21,11 +21,9 @@ const checkStock = () => {
             next();
 
         } catch (err) {
-
             return res.status(500).send(err.message);
-
         }
-    }
+    };
 };
 
 export default checkStock;
