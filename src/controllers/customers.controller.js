@@ -3,14 +3,16 @@ import db from "../database/database.connection.js";
 export const getCustomers = async (req, res) => {
 
     const searchByCPF = req.query.cpf;
+    const offset = req.query.offset ? req.query.offset : 0;
+    const limit = req.query.limit ? req.query.limit : 99999;
 
     try {
 
         const { rows: customers } = searchByCPF ?
             await db.query(`
-                SELECT * FROM customers WHERE LOWER(cpf) LIKE '${searchByCPF}%';
-            `) :
-            await db.query("SELECT * FROM customers");
+                SELECT * FROM customers WHERE LOWER(cpf) LIKE '${searchByCPF}%' LIMIT $1 OFFSET $2;
+            `, [limit, offset]) :
+            await db.query("SELECT * FROM customers LIMIT $1 OFFSET $2", [limit, offset]);
         return res.status(200).send(customers);
 
     } catch (err) {

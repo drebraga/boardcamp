@@ -6,19 +6,21 @@ export const getRentals = async (req, res) => {
 
     const searchByCustomer = req.query.customerId;
     const searchByGame = req.query.gameId;
+    const offset = req.query.offset ? req.query.offset : 0;
+    const limit = req.query.limit ? req.query.limit : 99999;
 
     try {
 
         const { rows: rentals } = searchByCustomer ?
+            await db.query(`
+                    SELECT * FROM rentals WHERE "customerId" = $1 LIMIT $1 OFFSET $2;
+                `, [searchByCustomer, limit, offset]) : (searchByGame) ?
                 await db.query(`
-                    SELECT * FROM rentals WHERE "customerId" = $1;
-                `, [searchByCustomer]) : (searchByGame) ?
+                    SELECT * FROM rentals WHERE "gameId" = $1 LIMIT $1 OFFSET $2;
+                `, [searchByGame, limit, offset]) :
                 await db.query(`
-                    SELECT * FROM rentals WHERE "gameId" = $1;
-                `, [searchByGame]) :
-                await db.query(`
-                    SELECT * FROM rentals;
-                `);
+                    SELECT * FROM rentals LIMIT $1 OFFSET $2;
+                `, [limit, offset]);
 
 
         const { rows: customers } = await db.query(`
