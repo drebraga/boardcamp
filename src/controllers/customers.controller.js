@@ -15,13 +15,13 @@ export const getCustomers = async (req, res) => {
                 SELECT * 
                 FROM customers 
                 WHERE LOWER(cpf) LIKE '${searchByCPF}%' 
-                ORDER BY ${orderBy} ${desc}
+                ORDER BY "${orderBy}" ${desc}
                 LIMIT $1 OFFSET $2;
             `, [limit, offset]) :
             await db.query(`
                 SELECT * 
                 FROM customers 
-                ORDER BY ${orderBy} ${desc} 
+                ORDER BY "${orderBy}" ${desc} 
                 LIMIT $1 OFFSET $2;
             `, [limit, offset]);
         return res.status(200).send(customers);
