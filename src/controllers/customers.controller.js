@@ -1,9 +1,16 @@
 import db from "../database/database.connection.js";
 
 export const getCustomers = async (req, res) => {
+
+    const searchByCPF = req.query.cpf;
+
     try {
 
-        const { rows: customers } = await db.query("SELECT * FROM customers");
+        const { rows: customers } = searchByCPF ?
+            await db.query(`
+                SELECT * FROM customers WHERE LOWER(cpf) LIKE '${searchByCPF}%';
+            `) :
+            await db.query("SELECT * FROM customers");
         return res.status(200).send(customers);
 
     } catch (err) {

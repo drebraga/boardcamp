@@ -3,11 +3,23 @@ import dayjs from "dayjs";
 
 
 export const getRentals = async (req, res) => {
+
+    const searchByCustomer = req.query.customerId;
+    const searchByGame = req.query.gameId;
+
     try {
 
-        const { rows: rentals } = await db.query(`
-            SELECT * FROM rentals
-        `);
+        const { rows: rentals } = searchByCustomer ?
+                await db.query(`
+                    SELECT * FROM rentals WHERE "customerId" = $1;
+                `, [searchByCustomer]) : (searchByGame) ?
+                await db.query(`
+                    SELECT * FROM rentals WHERE "gameId" = $1;
+                `, [searchByGame]) :
+                await db.query(`
+                    SELECT * FROM rentals;
+                `);
+
 
         const { rows: customers } = await db.query(`
             SELECT id, name FROM customers
@@ -82,8 +94,6 @@ export const returnRental = async (req, res) => {
         const { rows: rentals } = await db.query(`
             SELECT "rentDate", "daysRented", "originalPrice" FROM rentals WHERE id = $1;
         `, [id]);
-
-        if (rentals.length === 0) return res.sendStatus(404);
 
         const { rentDate, daysRented, originalPrice } = rentals[0];
 
