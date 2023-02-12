@@ -3,6 +3,8 @@ import db from "../database/database.connection.js";
 export const getCustomers = async (req, res) => {
 
     const searchByCPF = req.query.cpf;
+    const orderBy = req.query.order ? req.query.order : "id";
+    const desc = req.query.desc ? "DESC" : "ASC";
     const offset = req.query.offset ? req.query.offset : 0;
     const limit = req.query.limit ? req.query.limit : 99999;
 
@@ -10,9 +12,18 @@ export const getCustomers = async (req, res) => {
 
         const { rows: customers } = searchByCPF ?
             await db.query(`
-                SELECT * FROM customers WHERE LOWER(cpf) LIKE '${searchByCPF}%' LIMIT $1 OFFSET $2;
+                SELECT * 
+                FROM customers 
+                ORDER BY ${orderBy} ${desc}
+                WHERE LOWER(cpf) LIKE '${searchByCPF}%' 
+                LIMIT $1 OFFSET $2;
             `, [limit, offset]) :
-            await db.query("SELECT * FROM customers LIMIT $1 OFFSET $2", [limit, offset]);
+            await db.query(`
+                SELECT * 
+                FROM customers 
+                ORDER BY ${orderBy} ${desc} 
+                LIMIT $1 OFFSET $2;
+            `, [limit, offset]);
         return res.status(200).send(customers);
 
     } catch (err) {

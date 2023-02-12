@@ -3,16 +3,23 @@ import db from "../database/database.connection.js";
 export const getGames = async (req, res) => {
 
     const searchByName = req.query.name;
+    const orderBy = req.query.order ? req.query.order : "id";
+    const desc = req.query.desc ? "DESC" : "ASC";
     const offset = req.query.offset ? req.query.offset : 0;
     const limit = req.query.limit ? req.query.limit : 99999;
 
     try {
+        console.log(desc)
 
         const { rows: games } = searchByName ?
             await db.query(`
-                SELECT * FROM games WHERE LOWER(name) LIKE '${searchByName}%' LIMIT $1 OFFSET $2;
+                SELECT * 
+                FROM games 
+                ORDER BY ${orderBy} ${desc}
+                WHERE LOWER(name) LIKE '${searchByName}%' 
+                LIMIT $1 OFFSET $2;
             `, [limit, offset]) :
-            await db.query("SELECT * FROM games LIMIT $1 OFFSET $2;", [limit, offset]);
+            await db.query(`SELECT * FROM games ORDER BY ${orderBy} ${desc} LIMIT $1 OFFSET $2;`, [limit, offset]);
         return res.status(200).send(games);
 
     } catch (err) {
