@@ -15,8 +15,8 @@ export const getGames = async (req, res) => {
             await db.query(`
                 SELECT * 
                 FROM games 
-                ORDER BY ${orderBy} ${desc}
                 WHERE LOWER(name) LIKE '${searchByName}%' 
+                ORDER BY ${orderBy} ${desc}
                 LIMIT $1 OFFSET $2;
             `, [limit, offset]) :
             await db.query(`SELECT * FROM games ORDER BY ${orderBy} ${desc} LIMIT $1 OFFSET $2;`, [limit, offset]);

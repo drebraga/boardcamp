@@ -17,15 +17,15 @@ export const getRentals = async (req, res) => {
                 await db.query(`
                     SELECT * 
                     FROM rentals 
-                    ORDER BY ${orderBy} ${desc}
                     WHERE "customerId" = $1 
+                    ORDER BY ${orderBy} ${desc}
                     LIMIT $2 OFFSET $3;
                 `, [searchByCustomer, limit, offset]) : (searchByGame) ?
                 await db.query(`
                     SELECT * 
                     FROM rentals 
-                    ORDER BY ${orderBy} ${desc}
                     WHERE "gameId" = $1 
+                    ORDER BY ${orderBy} ${desc}
                     LIMIT $2 OFFSET $3;
                 `, [searchByGame, limit, offset]) :
                 await db.query(`
