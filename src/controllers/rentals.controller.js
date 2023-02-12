@@ -13,10 +13,10 @@ export const getRentals = async (req, res) => {
 
         const { rows: rentals } = searchByCustomer ?
             await db.query(`
-                    SELECT * FROM rentals WHERE "customerId" = $1 LIMIT $1 OFFSET $2;
+                    SELECT * FROM rentals WHERE "customerId" = $1 LIMIT $2 OFFSET $3;
                 `, [searchByCustomer, limit, offset]) : (searchByGame) ?
                 await db.query(`
-                    SELECT * FROM rentals WHERE "gameId" = $1 LIMIT $1 OFFSET $2;
+                    SELECT * FROM rentals WHERE "gameId" = $1 LIMIT $2 OFFSET $3;
                 `, [searchByGame, limit, offset]) :
                 await db.query(`
                     SELECT * FROM rentals LIMIT $1 OFFSET $2;
