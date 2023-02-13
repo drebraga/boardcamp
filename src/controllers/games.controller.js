@@ -18,7 +18,7 @@ export const getGames = async (req, res) => {
                 ORDER BY "${orderBy}" ${desc}
                 LIMIT $1 OFFSET $2;
             `, [limit, offset]) :
-            await db.query(`SELECT * FROM games ORDER BY ${orderBy} ${desc} LIMIT $1 OFFSET $2;`, [limit, offset]);
+            await db.query(`SELECT * FROM games ORDER BY "${orderBy}" ${desc} LIMIT $1 OFFSET $2;`, [limit, offset]);
         return res.status(200).send(games);
 
     } catch (err) {
